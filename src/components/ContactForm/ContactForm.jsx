@@ -1,11 +1,16 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import PropTypes from 'prop-types';
+import { Formik, Field, ErrorMessage } from 'formik';
 import { nanoid } from 'nanoid';
-// import { FormField } from './ContactForm.styled';
+import { object, string } from 'yup';
+import 'yup-phone-lite';
 
-const ContactFormSchema = Yup.object().shape({
-  name: Yup.string().required('Required field!'),
-  number: Yup.number().required('Required field!'),
+import { FormikForm } from './ContactForm.styled';
+
+const contactSchema = object().shape({
+  name: string().required('Required field!'),
+  number: string()
+    .phone('UA', 'Please enter a valid Ukrainian phone number')
+    .required('Required field!'),
 });
 
 export const ContactForm = ({ onSaveContact }) => {
@@ -14,30 +19,34 @@ export const ContactForm = ({ onSaveContact }) => {
       <h1>Phonebook</h1>
       <Formik
         initialValues={{ name: '', number: '' }}
-        validationSchema={ContactFormSchema}
+        validationSchema={contactSchema}
         onSubmit={(values, actions) => {
           onSaveContact({ ...values, id: nanoid() });
           actions.resetForm();
         }}
       >
-        <Form>
+        <FormikForm>
           <label>
-            Name
-            <Field name="name" placeholder="Enter your name" />
-            <ErrorMessage name="name" component="div" />
+            <div>
+              <span>Name</span>
+              <Field name="name" placeholder="Enter name" />
+            </div>
+            <ErrorMessage name="name" component="p" />
           </label>
-          <br />
           <label>
-            Number
-            <Field name="number" placeholder="Enter your phone number" />
-            <ErrorMessage name="number" component="div" />
+            <div>
+              <span>Number</span>
+              <Field name="number" placeholder="Enter UA phone number" />
+            </div>
+            <ErrorMessage name="number" component="p" />
           </label>
-          <br />
-          <button type="submit">Submit</button>
-        </Form>
+          <button type="submit">Add new contact</button>
+        </FormikForm>
       </Formik>
     </div>
   );
 };
 
-// Field name="number" type='tel' !!!
+ContactForm.propTypes = {
+  onSaveContact: PropTypes.func.isRequired,
+};
