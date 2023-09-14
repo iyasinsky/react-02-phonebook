@@ -9,7 +9,7 @@ import { FormikForm } from './ContactForm.styled';
 const contactSchema = object().shape({
   name: string().required('Required field!'),
   number: string()
-    .phone('UA', 'Please enter a valid Ukrainian phone number')
+    .phone('UA', 'Please enter a Ukrainian phone number')
     .required('Required field!'),
 });
 
